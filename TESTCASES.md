@@ -20,3 +20,4 @@
 - **Automated test**: `tests/test_entry_service.py::test_add_entry_raises_value_error_for_invalid_date_format`
 - **Marker**: `@pytest.mark.testcase("TC-ADD-ENTRY-NEG-001")`
 - **Run command**: `pytest -q -m testcase`
+
