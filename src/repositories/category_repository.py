@@ -1,7 +1,7 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from src.core.models import Category, Subcategory, Entry
+from src.core.models import Category, Subcategory, Entry, entry_subcategory_table
 from src.repositories.base_repository import BaseRepository
 
 

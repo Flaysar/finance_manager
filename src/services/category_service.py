@@ -52,6 +52,46 @@ class CategoryService:
             'category_id': subcategory.category_id
         }
 
+    def update_category(self, category_id: int, name: str = None, type: str = None) -> Optional[Dict[str, Any]]:
+        """Обновить категорию"""
+        update_data = {}
+        if name is not None:
+            update_data['name'] = name
+        if type is not None:
+            update_data['type'] = type
+        
+        if update_data:
+            category = self.category_repo.update(category_id, **update_data)
+            if category:
+                return self._category_to_dict(category)
+        return None
+
+    def update_subcategory(self, subcategory_id: int, name: str = None, category_id: int = None) -> Optional[Dict[str, Any]]:
+        """Обновить подкатегорию"""
+        update_data = {}
+        if name is not None:
+            update_data['name'] = name
+        if category_id is not None:
+            update_data['category_id'] = category_id
+        
+        if update_data:
+            subcategory = self.subcategory_repo.update(subcategory_id, **update_data)
+            if subcategory:
+                return {
+                    'id': subcategory.id,
+                    'name': subcategory.name,
+                    'category_id': subcategory.category_id
+                }
+        return None
+
+    def delete_category(self, category_id: int) -> bool:
+        """Удалить категорию"""
+        return self.category_repo.delete(category_id)
+
+    def delete_subcategory(self, subcategory_id: int) -> bool:
+        """Удалить подкатегорию"""
+        return self.subcategory_repo.delete(subcategory_id)
+
     def _category_to_dict(self, category) -> Dict[str, Any]:
         return {
             'id': category.id,

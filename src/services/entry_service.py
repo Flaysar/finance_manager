@@ -31,6 +31,42 @@ class EntryService:
 
         return self._entry_to_dict(entry)
 
+    def update_entry(self, entry_id: int, name: str, price: float, type: str,
+                     subcategory_ids: List[int] = None, date: str = None) -> Dict[str, Any]:
+        """
+        Обновить существующую запись
+        """
+        if date:
+            entry_date = datetime.strptime(date, '%Y-%m-%d').date()
+        else:
+            entry_date = datetime.now().date()
+
+        # Обновляем основные поля записи
+        entry = self.entry_repo.update(
+            entry_id,
+            name=name,
+            price=price,
+            type=type,
+            date=entry_date
+        )
+
+        if entry:
+            # Обновляем подкатегории
+            current_subcategories = self.entry_repo.get_subcategories(entry_id)
+            current_subcat_ids = [s.id for s in current_subcategories]
+
+            # Удаляем старые подкатегории
+            for subcat_id in current_subcat_ids:
+                self.entry_repo.remove_subcategory(entry_id, subcat_id)
+
+            # Добавляем новые подкатегории
+            if subcategory_ids:
+                for subcategory_id in subcategory_ids:
+                    self.entry_repo.add_subcategory(entry_id, subcategory_id)
+
+            return self._entry_to_dict(entry)
+        return None
+
     def get_recent_entries(self, limit: int = 20) -> List[Dict[str, Any]]:
         """Получить последние записи"""
         entries = self.entry_repo.get_recent(limit)
